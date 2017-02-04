@@ -54,7 +54,7 @@ def main(argv):
 	google_search_terms = extract_terms(input_term_filepath)
 	create_folder(download_folder)
 	for term  in google_search_terms:
-		get_images(google_search_theme, term, download_folder, nb_pictures_per_term)
+		get_images(google_search_theme, term, download_folder, nb_pictures_per_term, webdriver_path)
 	
 
 def create_folder(newpath):
@@ -70,13 +70,13 @@ def clean_name(name):
 def get_soup(url, header):
 	return BeautifulSoup(urllib2.urlopen(urllib2.Request(url, headers=header)))
 
-def get_images(theme, query, folder, nb_pictures = 150):
+def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chromedriver"):
 
 	counter = 0
 	scrolldown_offset = 40
 
 	url = google_search_img_url + (theme + " " + query).replace("_", " ") + "&source=lnms&tbm=isch"
-	
+	print webdriver_path
 	driver = webdriver.Chrome(executable_path = webdriver_path)
 	driver.get(url)
 
