@@ -11,14 +11,14 @@ import csv
 import json
 import getopt
 import urllib
-import urllib2
 import requests
+import base64
 
 
 webdriver_path = 'C:\opt\chromedriver_win32\chromedriver.exe'
 
 google_search_img_url = "https://www.google.com/search?q="
-google_search_img_class = "rg_ic"
+google_search_img_class = "rg_i"
 
 download_folder = "img"
 google_search_theme = ""
@@ -67,9 +67,6 @@ def clean_name(name):
 	name = "".join([c for c in name if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 	return name.replace(" ", "_")
 
-def get_soup(url, header):
-	return BeautifulSoup(urllib2.urlopen(urllib2.Request(url, headers=header)))
-
 def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chromedriver"):
 
 	counter = 0
@@ -94,7 +91,7 @@ def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chrome
 
 	for img in soup.findAll("img", { "class" : google_search_img_class }):
 		
-		if img.has_key("src"):
+		if img.has_attr("src"):
 			img_url = img['src']
 
 			create_folder(os.path.join(folder, query))
@@ -102,10 +99,10 @@ def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chrome
 			
 			if counter < nb_pictures:
 				print('progress : ' + str(round(counter / nb_pictures * 100,0)))
-				
 				if 'base64' in img_url:
 					with open(path, "wb") as fh:
-						fh.write(img_url.split(',')[1].decode('base64'))
+						#fh.write(img_url.split(',')[1].decode('base64'))
+						fh.write(base64.decodebytes(img_url.split(',')[1].encode('utf-8')))
 						fh.close()
 						counter = counter + 1
 				else:
@@ -117,7 +114,7 @@ def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chrome
 
 def extract_terms(input_term_filepath):
 	terms = []
-	with open(input_term_filepath, 'rb') as termfile:
+	with open(input_term_filepath, 'r') as termfile:
 		terms_csv = csv.reader(termfile, delimiter = ',')
 		for term in terms_csv:
 			terms.append(term[0])
