@@ -76,7 +76,7 @@ def get_images(theme, query, folder, nb_pictures = 150, webdriver_path = "chrome
 	scrolldown_offset = 40
 
 	url = google_search_img_url + (theme + " " + query).replace("_", " ") + "&source=lnms&tbm=isch"
-	print webdriver_path
+	print(webdriver_path)
 	driver = webdriver.Chrome(executable_path = webdriver_path)
 	driver.get(url)
 
